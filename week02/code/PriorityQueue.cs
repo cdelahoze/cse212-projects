@@ -24,14 +24,21 @@
 
         // Find the index of the item with the highest priority to remove
         var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+        for (int index = 1; index < _queue.Count; index++) // index < _queue.Count - 1 It causes the loop to stop before checking the last element of the list.
         {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
+        // Using `>=` (greater than or equal to) means that if two people have the same priority, the code will select the one who arrived last. 
+        // Typically, in a priority queue, if there is a tie, priority should be given to the one who arrived first (FIFO).
+        // Correction: Use only `>` (greater than) to retain the person who was already there in the event of a tie.
+
+            if (_queue[index].Priority > _queue[highPriorityIndex].Priority)
                 highPriorityIndex = index;
         }
 
         // Remove and return the item with the highest priority
-        var value = _queue[highPriorityIndex].Value;
+        var value = _queue[highPriorityIndex].Value; 
+        // _queue[highPriorityIndex].Value The code finds the value, but it forgets to remove it from _queue. 
+        // This means that if you call Dequeue multiple times, it will always return the same element, and the list will never shrink.
+        _queue.RemoveAt(highPriorityIndex);
         return value;
     }
 

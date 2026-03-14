@@ -37,17 +37,29 @@ public class TakingTurnsQueue
         {
             throw new InvalidOperationException("No one in the queue.");
         }
+
+        // 1. Sacamos a la persona que está al frente
+        Person person = _people.Dequeue();
+
+        // 2. Lógica de re-inserción (El "Círculo")
+        if (person.Turns <= 0)
+        {
+            // Turnos infinitos: vuelve a la cola tal cual
+            _people.Enqueue(person);
+        }
         else
         {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
+            // Turnos finitos: restamos uno
+            person.Turns -= 1;
+
+            // Si todavía le quedan turnos después de este, regresa al final
+            if (person.Turns > 0)
             {
-                person.Turns -= 1;
                 _people.Enqueue(person);
             }
-
-            return person;
         }
+
+        return person;
     }
 
     public override string ToString()
