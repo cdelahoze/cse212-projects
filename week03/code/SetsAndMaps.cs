@@ -19,11 +19,38 @@ public static class SetsAndMaps
     /// that there were no duplicates) and therefore should not be returned.
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
-    public static string[] FindPairs(string[] words)
+public static string[] FindPairs(string[] words)
+{
+    // TODO Problem 1 - ADD YOUR CODE HERE
+    
+    // Using a HashSet to store words we have already seen for O(1) lookup performance
+    var seen = new HashSet<string>();
+    // List to store the formatted strings of the pairs found
+    var results = new List<string>();
+
+    foreach (var word in words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // To find a pair, we need to check if the reverse of the current word exists
+        char[] charArray = word.ToCharArray();
+        Array.Reverse(charArray);
+        string reverseWord = new string(charArray);
+
+        // Check if the reverse of the current word was already added to the set
+        if (seen.Contains(reverseWord))
+        {
+            // If found, we format the result as "word & reverseWord"
+            results.Add($"{reverseWord} & {word}");
+        }
+        else
+        {
+            // If not found, add the current word to the set to check against future words
+            seen.Add(word);
+        }
     }
+
+    // Convert the list of results back to an array as required by the function signature
+    return results.ToArray();
+}
 
     /// <summary>
     /// Read a census file and summarize the degrees (education)
