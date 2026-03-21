@@ -19,38 +19,37 @@ public static class SetsAndMaps
     /// that there were no duplicates) and therefore should not be returned.
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
-public static string[] FindPairs(string[] words)
-{
-    // TODO Problem 1 - ADD YOUR CODE HERE
-    
-    // Using a HashSet to store words we have already seen for O(1) lookup performance
-    var seen = new HashSet<string>();
-    // List to store the formatted strings of the pairs found
-    var results = new List<string>();
-
-    foreach (var word in words)
+    public static string[] FindPairs(string[] words)
     {
-        // To find a pair, we need to check if the reverse of the current word exists
-        char[] charArray = word.ToCharArray();
-        Array.Reverse(charArray);
-        string reverseWord = new string(charArray);
 
-        // Check if the reverse of the current word was already added to the set
-        if (seen.Contains(reverseWord))
+        // Using a HashSet to store words we have already seen for O(1) lookup performance
+        var seen = new HashSet<string>();
+        // List to store the formatted strings of the pairs found
+        var results = new List<string>();
+
+        foreach (var word in words)
         {
-            // If found, we format the result as "word & reverseWord"
-            results.Add($"{reverseWord} & {word}");
+            // To find a pair, we need to check if the reverse of the current word exists
+            char[] charArray = word.ToCharArray();
+            Array.Reverse(charArray);
+            string reverseWord = new string(charArray);
+
+            // Check if the reverse of the current word was already added to the set
+            if (seen.Contains(reverseWord))
+            {
+                // If found, we format the result as "word & reverseWord"
+                results.Add($"{reverseWord} & {word}");
+            }
+            else
+            {
+                // If not found, add the current word to the set to check against future words
+                seen.Add(word);
+            }
         }
-        else
-        {
-            // If not found, add the current word to the set to check against future words
-            seen.Add(word);
-        }
+
+        // Convert the list of results back to an array as required by the function signature
+        return results.ToArray();
     }
-
-    // Convert the list of results back to an array as required by the function signature
-    return results.ToArray();
-}
 
     /// <summary>
     /// Read a census file and summarize the degrees (education)
@@ -69,7 +68,22 @@ public static string[] FindPairs(string[] words)
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+         
+            // The degree is in column 4 (index 3 because arrays start at 0)
+            // I use Trim() to remove any accidental whitespace
+            string degree = fields[3].Trim();
+
+            // Check if the degree is already a key in our dictionary
+            if (degrees.ContainsKey(degree))
+            {
+                // If it exists, increment the counter by 1
+                degrees[degree]++;
+            }
+            else
+            {
+                // If it doesn't exist, add it to the dictionary with an initial count of 1
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -93,8 +107,42 @@ public static string[] FindPairs(string[] words)
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // 1. Pre-process strings: Remove spaces and convert to lowercase as required
+        string s1 = word1.Replace(" ", "").ToLower();
+        string s2 = word2.Replace(" ", "").ToLower();
+
+        // 2. If lengths are different, they cannot be anagrams
+        if (s1.Length != s2.Length)
+            return false;
+
+        // 3. Create a dictionary to store character frequencies
+        var letterCounts = new Dictionary<char, int>();
+
+        // 4. Count the frequency of each letter in the first word
+        foreach (char c in s1)
+        {
+            if (letterCounts.ContainsKey(c))
+                letterCounts[c]++;
+            else
+                letterCounts[c] = 1;
+        }
+
+        // 5. Compare with the second word by decrementing the counts
+        foreach (char c in s2)
+        {
+            // If the letter was never in word1, it's not an anagram
+            if (!letterCounts.ContainsKey(c))
+                return false;
+
+            letterCounts[c]--;
+
+            // If a letter appears more times in word2 than in word1, count becomes negative
+            if (letterCounts[c] < 0)
+                return false;
+        }
+
+        // 6. If we reached here and lengths were equal, all counts must be zero
+        return true;
     }
 
     /// <summary>
