@@ -7,10 +7,15 @@ public class Node
     public Node(int data)
     {
         this.Data = data;
+        Left = null;
+        Right = null;
     }
+
+    
 
     public void Insert(int value)
     {
+        
         // TODO Start Problem 1
 
         if (value < Data)
@@ -21,7 +26,7 @@ public class Node
             else
                 Left.Insert(value);
         }
-        else
+        else if (value > Data)
         {
             // Insert to the right
             if (Right is null)
@@ -29,17 +34,27 @@ public class Node
             else
                 Right.Insert(value);
         }
+        // If value == Data, do nothing (no duplicates allowed)
     }
 
     public bool Contains(int value)
     {
         // TODO Start Problem 2
-        return false;
+        if (value == Data)
+            return true;
+        else if (value < Data)
+            return Left?.Contains(value) ?? false;
+        else // value > Data
+            return Right?.Contains(value) ?? false;
     }
 
     public int GetHeight()
     {
         // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+
+      if (this == null) return 0;
+        return 1 + Math.Max(Left?.GetHeight() ?? 0, Right?.GetHeight() ?? 0);
+
+         // Replace this line with the correct return statement(s)
     }
 }
