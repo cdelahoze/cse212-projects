@@ -11,11 +11,11 @@ public class Node
         Right = null;
     }
 
-    
+
 
     public void Insert(int value)
     {
-        
+
         // TODO Start Problem 1
 
         if (value < Data)
@@ -52,9 +52,9 @@ public class Node
     {
         // TODO Start Problem 4
 
-      if (this == null) return 0;
-        return 1 + Math.Max(Left?.GetHeight() ?? 0, Right?.GetHeight() ?? 0);
+        int leftHeight = Left?.GetHeight() ?? 0;
+        int rightHeight = Right?.GetHeight() ?? 0;
 
-         // Replace this line with the correct return statement(s)
+        return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
